@@ -4,153 +4,182 @@
 #include <vector>
 #include <numeric>
 #include <algorithm>
-
-using namespace std;
-using Line = vector<int>;
-
+#include <string_view>
 
 using namespace std;
 
-//void recHelp(const string& maze, const int& size, const int i, const int j, vector<int>& path, int cost, const char& prev, const char dest) {
-//    //if (i < 0 || i >= size || j < 0 || j >= size) return;
-//    auto curr = maze[i * (size + 1) + j];
-//    cost += abs(curr - prev);
-//    if (path[i * size + j] <= cost && path[i * size + j] != -1) return;
+//string integer_square_root(string n) {
+//    auto size = n.size();
+//    if (size < 10) return to_string(sqrt(stoi(n)));
 //
-//    path[i * size + j] = cost;
-//    if (i < size - 1 && dest != 'e')  recHelp(maze, size, i + 1, j, path, cost, curr, 'w');
-//    if (j < size - 1 && dest != 's')  recHelp(maze, size, i, j + 1, path, cost, curr, 'n');
-//    if (j > 0 && dest != 'n')         recHelp(maze, size, i, j - 1, path, cost, curr, 's');
-//    if (i > 0 && dest != 'w')         recHelp(maze, size, i - 1, j, path, cost, curr, 'e');
-//}
+//    string res;
+//    string ost(size / 2, '0');
+//    auto i = n.begin();
+//    if (n.size() % 2 == 1) {
+//        ost(*i);
+//        ++i;
+//    }
+//    else {
+//        ost.push_back(*i++);
+//        ost.push_back(*i++);
+//    }
+//    res += to_string(sqrt(stoi(ost)));
 //
-//int path_finder(string s) {
-//    //cout << s << endl;
-//    auto size = count(s.begin(), s.end(), '\n') + 1;
-//    cout << size << endl;
-//    auto path = vector<int>(size * size, -1);
-//    recHelp(s, size, 0, 0, path, 0, s.front(), '-');
-//    cout << " WWWWWWWWWWWWWWWWWWWWW----------------------------" << path.back() << endl;
-//    return path.back();
+//
+//
+//    return "";
 //}
-int path_finder(string s) {
-    //cout << s << endl;
-    auto size = count(s.begin(), s.end(), '\n') + 1;
-    cout << size << endl;
-    auto vertices = vector<int>(size * size, -1);
-    auto buf = vector<int>(size * size, -1);
-    vertices[0] = 0;
-    auto required = end(vertices) - 1;
 
-    auto min = min_element(begin(vertices), end(vertices), [](auto a, auto b) { return (a == -1) ? b : std::min(a, b); });
-    auto no_min = min - begin(vertices);
-    for (; min != required;) {
-        //checkRight:
-        if (no_min % size < size) {
-            auto prev = *(min + 1);
-            auto curr = *min + abs(s[no_min + no_min / size + 1] - s[no_min + no_min / size]);
-            if (prev == -1 || curr < prev) *(min + 1) = curr;
+
+string multiply(string num1, string num2);
+std::string sum_strings(const std::string& a, const std::string& b);
+string divide_strings(string a, string b);
+
+
+
+string floorSqrt(string x)
+{
+    if (x == "0" || x == "1")
+        return x;
+
+    // Staring from 1, try all numbers until 
+    // i*i is greater than or equal to x. 
+    string start = "1", end = x, ans;
+    while (start <= end)
+    {
+        string mid = (start + end) / 2;
+
+        // If x is a perfect square 
+        if (mid * mid == x)
+            return mid;
+
+        if (mid * mid < x)
+        {
+            start = mid + 1;
+            ans = mid;
         }
-        //checkLeft:
-        if (no_min % size > 0) {
-            auto prev = *(min - 1);
-            auto curr = *min + abs(s[no_min + no_min / size - 1] - s[no_min + no_min / size]);
-            if (prev == -1 || curr < prev) *(min - 1) = curr;
-        }
-        //checkTop:
-        if (no_min - size >= 0) {
-            auto prev = *(min - size);
-            auto curr = *min + abs(s[no_min + no_min / size - size - 1] - s[no_min + no_min / size]);
-            if (prev == -1 || curr < prev) *(min - size) = curr;
-        }
-        //checkDown:
-        if (no_min + size < size * size) {
-            auto prev = *(min + size);
-            auto curr = *min + abs(s[no_min + no_min / size  + size + 1] - s[no_min + no_min / size]);
-            if (prev == -1 || curr < prev) *(min + size) = curr;
-        }
-        for (auto i : vertices) cout << i << " ";
-        cout << endl;
-        *(min) = -2;
-        min = min_element(begin(vertices), end(vertices), [](const auto &a, const auto& b) { return b == a ? false : ((b < 0) ? true : ((a < 0)? false : (a < b))); });
-        no_min = min - begin(vertices);
+        else 
+            end = mid - 1;
     }
-    return *required;
-    return vertices.back();
+    return ans;
 }
+
+
+
 
 int main() {
-    cout << path_finder("40439\n"
-                        "65862\n"
-                        "50178\n"
-                        "37324\n"
-                        "42384"); //12 , but i have 13
-	/*cout << path_finder("277941996271845253012572788140980874296813119657268437926732022032\n"
-                        "451054675730458221215809203426671999376851199941364866907369958340\n"
-                        "207882114030388786686512407554574274796111359147705358721796146785\n"
-                        "174908033147130885767856682253880401224541574553021028896313693843\n"
-                        "986642919364869181990722003489988562753801519428547611041389379157\n"
-                        "542035186028094956050310547654429824332956067475202233287274616798\n"
-                        "153561389136876002442189872442589835194029706508745283162407875980\n"
-                        "499001991862668386714157854542812914113419897935527034920396677899\n"
-                        "202765874667139053547788368147289675154530574471926896732566206165\n"
-                        "892366513180375164759907747575054203084392642150525717401458955608\n"
-                        "906565022437402975646981999471281047861004947156930520810979028422\n"
-                        "320520144071764736029236140905337302346943012415219353269269714755\n"
-                        "909703225498039974492330232709419581826575398485056580533725666816\n"
-                        "910597246117832782945237925708512593317148054422718454466938089450\n"
-                        "782428543997380227663486286342412856821212170292971539179003464661\n"
-                        "554697804043262515644745083672029408100807343604368843563052456316\n"
-                        "346428163643091895364999136879623588396650171361019608742341223872\n"
-                        "613291410568880852828284527104587829160248046243736576038941399392\n"
-                        "210456271025490268881875936165388525265587228366165454147755403387\n"
-                        "025574296245971616023810363911813492813668155519111615971284567806\n"
-                        "200576501354297351068188734537157134785010651497713734529973690423\n"
-                        "004527893954825490063952223386888462461758362803109697849499077045\n"
-                        "281657405907419478384443343247885942812502266125253697223579458964\n"
-                        "375527954586102693616183120138565330045403336595878696120353201736\n"
-                        "760400035607314375917142665740536507802383036763274089447933007657\n"
-                        "559017330908455175211934336213199092945158993622143268891435744863\n"
-                        "059864675138342880761024590106601589168771527935003127609839509870\n"
-                        "096886230945747280062945897905106004829843630378376580382002514334\n"
-                        "919025488617677245276686859493104218776730497133951549146297508229\n"
-                        "018781722665952008133052714538659627711179894396139435628283068933\n"
-                        "824264143894417452145165693688993619045525978933149878337797718079\n"
-                        "976728237020546723588470341258367931074777853627095054081128984890\n"
-                        "997497192656375182582627435124316077906161929637807199853567198928\n"
-                        "618257449512214123129697319301174299956009240665299159000950099719\n"
-                        "824427561847366291303399628591693367013199946777127469541312681919\n"
-                        "831140357934868606760812282595580814042757343225893195535704474456\n"
-                        "062450196618219720275765423860678934953536579652891390832331600413\n"
-                        "820394141328708837032395657618920079495727619692528779234095089187\n"
-                        "046840501582936903846267076106823607669937420022628455274084898359\n"
-                        "047150094228401548087607216042976681813337307453454134957772971759\n"
-                        "162616346211758171888555974060278459083826902931011098685092211277\n"
-                        "187780382775007106086515958388098966924194704636235816623651471279\n"
-                        "983505997550296997571069206535644096597264483074944150070845401001\n"
-                        "672318769286883210437733273674753185173091901222297161400968355964\n"
-                        "483703893017456462525521577165725296705229084823395859127855648177\n"
-                        "749573692076526103225923587324299468727154807639961676926778328286\n"
-                        "059796476130248605200877701759577476015940164924464453444731788455\n"
-                        "258762771163732297553136224389807993163299862004969492024672872561\n"
-                        "089320527947355395519286463930238292447151197648190038886299214255\n"
-                        "409337546430261297077896719437907132807642878197825526308343055961\n"
-                        "141006285326000763495441766353477790340072793971232779045791050931\n"
-                        "185292682171224711627399414629848389867084328790072913876548424474\n"
-                        "351071703595514937235881955592230557620901655178891502617188403459\n"
-                        "333533711428239381754463525881744199481725568527892360613193477187\n"
-                        "247322198960850086347878145955870734943850045065891798612329929194\n"
-                        "790075291928429501682016228137506735275679631591671075697623495268\n"
-                        "016775638709196216705760209756859626181171182734524390313298095959\n"
-                        "769876205400852282315866865360438348168608816134386084760418754588\n"
-                        "506488479005733552920992069418470030899809574820214523929883820825\n"
-                        "134236285887830585879058340545278601321809812062769787513787205095\n"
-                        "349441444852141219983263284795449595850337561895883311650221785854\n"
-                        "431665341640121754849861961746301568014388493760154053359643276324\n"
-                        "326984045514521246573437975527062870474947509643392655644126044442\n"
-                        "481096758812363550216640364710178380175988317872815481537128246296\n"
-                        "205793845524905645710433579198928419813585197853445490969878662626\n"
-                        "509078789475031592798675663926708626404663166236705564332647419591");*/
-	
+   
+
+    
 }
 
+
+
+
+
+std::string sum_strings(const std::string& a, const std::string& b) {
+    std::string res;
+    int extra = 0;
+    int ai = 0, bj = 0;
+    auto i = a.rbegin(), j = b.rbegin();
+    for (int curr; i != a.rend() || j != b.rend(); ) {
+        if (i != a.rend()) {
+            ai = *i - '0';
+            ++i;
+        }
+        else ai = 0;
+        if (j != b.rend()) {
+            bj = *j - '0';
+            ++j;
+        }
+        else bj = 0;
+        curr = ai + bj + extra;
+        if (curr > 9) {
+            curr -= 10;
+            extra = 1;
+        }
+        else extra = 0;
+        res.push_back(curr + '0');
+    }
+    if (extra) res.push_back('1');
+    std::reverse(res.begin(), res.end());
+    return res;
+}
+
+
+bool more_or_equal(const string& a, int current, int last, const string& b) {
+    for (int i = 0; current <= last; ++current, ++i) {
+        if (a[current] > b[i]) return true;
+        if (a[current] < b[i]) return false;
+    }
+    return true;
+}
+
+void substract(string& a, int left, int i, const string& b) {
+    for (int j = b.size() - 1; i >= left; --i, --j) {
+        if (a[i] >= b[j]) a[i] -= b[j] - '0';
+        else {
+            a[i] -= b[j] - 10 - '0';
+            --a[i - 1];
+        }
+    }
+}
+
+string divide(int extra, string& a, int left, int right, const string& b) {
+    string res = "0";
+    while (extra > 0 || more_or_equal(a, left, right, b)) {
+        substract(a, left, right, b);
+        ++res[0];
+        if (left > 0) extra = a[left - 1] - '0';
+        else extra = 0;
+    }
+    return res;
+}
+
+string multiply(string num1, string num2) {
+    int len1 = num1.size();
+    int len2 = num2.size();
+    if (len1 == 0 || len2 == 0) return "0";
+    vector<int> result(len1 + len2, 0);
+    int i_n1 = 0;
+    int i_n2 = 0;
+    for (int i = len1 - 1; i >= 0; i--) {
+        int carry = 0;
+        int n1 = num1[i] - '0';
+        i_n2 = 0;
+        for (int j = len2 - 1; j >= 0; j--) {
+            int n2 = num2[j] - '0';
+            int sum = n1 * n2 + result[i_n1 + i_n2] + carry;
+            carry = sum / 10;
+            result[i_n1 + i_n2] = sum % 10;
+            i_n2++;
+        }
+        if (carry > 0)
+            result[i_n1 + i_n2] += carry;
+        i_n1++;
+    }
+    int i = result.size() - 1;
+    while (i >= 0 && result[i] == 0) --i;
+    if (i == -1)
+        return "0";
+    string s;
+    while (i >= 0) s += std::to_string(result[i--]);
+    return s;
+}
+
+string divide_strings(string a, string b) {
+    if (a.size() < b.size()) return "0";
+    string quotient;
+    int extra = 0;
+    for (size_t i = 0, j = b.size() - 1; j < a.size(); ++i, ++j) {
+        if (extra || more_or_equal(a, i, j, b)) quotient += divide(extra, a, i, j, b);
+        else quotient += "0";
+        extra = a[i] - '0';
+    }
+    auto remainder = string(a.end() - b.size(), a.end());
+    remainder.erase(0, remainder.find_first_not_of('0', 0));
+    quotient.erase(0, quotient.find_first_not_of('0', 0));
+    if (quotient == "") quotient += "0";
+    if (remainder == "") remainder += "0";
+    return  quotient;
+}
