@@ -9,7 +9,7 @@
 using namespace std;
 using Line = std::vector<int>;
 using Table = std::vector<Line>;
-using Stage = std::pair<Table, std::pair<int, int>>;
+using Stage = std::tuple<Table, std::pair<int, int>>;
 
 
 std::vector<int> slide_puzzle(const Table& arr) {
@@ -33,37 +33,37 @@ std::vector<int> slide_puzzle(const Table& arr) {
     answer.back().back() = 0;
     /////
     vector<Stage> stages;
-    stages.push_back({ arr, {i, j} });
+    stages.push_back({ arr, {i,j} });
     Table tmp;
     for (int k = 0; k < stages.size(); ++k) {
         auto stage = stages[k];
-        if (stage.first == answer) 
+        if (std::get<0>(stage) == answer) 
             return { 1,1,1 };
 
-        int x = stage.second.first;
-        int y = stage.second.second;
+        int x = get<1>(stage).first;
+        int y = get<1>(stage).second;
         if (x > 0) {
-            tmp = stage.first;
+            tmp = std::get<0>(stage);
             std::swap(tmp[x][y], tmp[x - 1][y]);
-            if (find_if(stages.begin(), stages.end(), [&tmp](auto const& item) { return tmp == item.first;}) == stages.end())
+            if (find_if(stages.begin(), stages.end(), [&tmp](auto const& item) { return tmp == get<0>(item);}) == stages.end())
                 stages.push_back({ tmp, {x - 1, y} });
         }
         if (x < sizeR - 1) {
-            tmp = stage.first;
+            tmp = std::get<0>(stage);
             std::swap(tmp[x][y], tmp[x + 1][y]);
-            if (find_if(stages.begin(), stages.end(), [&tmp](auto const& item) { return tmp == item.first; }) == stages.end())
+            if (find_if(stages.begin(), stages.end(), [&tmp](auto const& item) { return tmp == get<0>(item); }) == stages.end())
                 stages.push_back({ tmp, {x + 1, y} });
         }
         if (y > 0) {
-            tmp = stage.first;
+            tmp = std::get<0>(stage);
             std::swap(tmp[x][y], tmp[x][y - 1]);
-            if (find_if(stages.begin(), stages.end(), [&tmp](auto const& item) { return tmp == item.first; }) == stages.end())
+            if (find_if(stages.begin(), stages.end(), [&tmp](auto const& item) { return tmp == get<0>(item); }) == stages.end())
                 stages.push_back({ tmp, {x, y - 1} });
         }
         if (y < sizeC - 1) {
-            tmp = stage.first;
+            tmp = std::get<0>(stage);
             std::swap(tmp[x][y], tmp[x][y + 1]);
-            if (find_if(stages.begin(), stages.end(), [&tmp](auto const& item) { return tmp == item.first; }) == stages.end())
+            if (find_if(stages.begin(), stages.end(), [&tmp](auto const& item) { return tmp == get<0>(item); }) == stages.end())
                 stages.push_back({ tmp, {x, y + 1} });
         }
 
