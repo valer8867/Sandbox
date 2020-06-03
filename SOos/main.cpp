@@ -44,28 +44,31 @@ endLoop:
     }
     answer.back().back() = 0;
     /////
-    unordered_set<Stage, stage_hash> tables;
-    tables.insert({ arr, {i, j} });
+    unordered_set<Stage, stage_hash> tables_coords;
+    tables_coords.insert({ arr, {i, j} });
     Table tmp;
-    for (auto& table : tables) {
-        if (i > 0) {
-            tmp = arr;
-            std::swap(tmp[i][j], tmp[i - 1][j]);
+    for (auto const& table_coord : tables_coords) {
+        if (table_coord.first == answer) return { 1,1,1 };
+        int x = table_coord.second.first;
+        int y = table_coord.second.second;
+        if (x > 0) {
+            tmp = table_coord.first;
+            std::swap(tmp[x][y], tmp[x - 1][y]);
 
-            tables.insert({ tmp, {i - 1, j} });
+            tables_coords.insert({ tmp, {i - 1, j} });
         }
-        if (i < sizeR - 1) {
+        if (x < sizeR - 1) {
 
         }
-        if (j > 0) {
+        if (y > 0) {
 
         }
-        if (j < sizeC) {
+        if (y < sizeC) {
 
         }
 
     }
-    return std::vector<int>();
+    return {0,0,0};
 }
 
 
