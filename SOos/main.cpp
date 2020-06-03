@@ -25,8 +25,7 @@ struct stage_hash
     }
 };
 
-std::vector<int> slide_puzzle(const Table& arr)
-{
+std::vector<int> slide_puzzle(const Table& arr) {
     int i = 0;
     int j = 0;
     for (auto sizeR = arr.size(), sizeC = arr[0].size(); i < sizeR; ++i) {
@@ -34,7 +33,6 @@ std::vector<int> slide_puzzle(const Table& arr)
             if (arr[i][j] == 0) goto endLoop;
     }
 endLoop:
-    
     unordered_set<Stage, stage_hash> tables;
     tables.insert({ arr, {i, j} });
 
