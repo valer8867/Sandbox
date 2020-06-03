@@ -13,9 +13,15 @@ using Stage = std::pair<Table, std::pair<int, int>>;
 
 struct stage_hash
 {
-    template <class T1, class T2>
-    std::size_t operator () (std::pair<T1, T2> const& pair) const {
-        return std::hash<T1>()(pair.first);
+    template <class table, class coords>
+    std::size_t operator () (std::pair<table, coords> const& pair) const {
+        size_t hsh = 0;
+        for (auto& i : pair.first) {
+            for (auto j : i) {
+                hsh ^= std::hash<int>()(j);
+            }
+        }
+        return hsh;
     }
 };
 
