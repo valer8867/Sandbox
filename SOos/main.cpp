@@ -9,7 +9,7 @@
 using namespace std;
 using Line = std::vector<int>;
 using Table = std::vector<Line>;
-using Stage = std::tuple<Table, std::pair<int, int>>;
+using Stage = std::tuple<Table, std::pair<int, int>, Line>;
 
 
 std::vector<int> slide_puzzle(const Table& arr) {
@@ -33,38 +33,50 @@ std::vector<int> slide_puzzle(const Table& arr) {
     answer.back().back() = 0;
     /////
     vector<Stage> stages;
-    stages.push_back({ arr, {i,j} });
+    stages.push_back({ arr, {i,j}, {} });
     Table tmp;
     for (int k = 0; k < stages.size(); ++k) {
         auto stage = stages[k];
         if (std::get<0>(stage) == answer) 
-            return { 1,1,1 };
+            return get<2>(stage);
 
         int x = get<1>(stage).first;
         int y = get<1>(stage).second;
         if (x > 0) {
             tmp = std::get<0>(stage);
             std::swap(tmp[x][y], tmp[x - 1][y]);
-            if (find_if(stages.begin(), stages.end(), [&tmp](auto const& item) { return tmp == get<0>(item);}) == stages.end())
-                stages.push_back({ tmp, {x - 1, y} });
+            if (find_if(stages.begin(), stages.end(), [&tmp](auto const& item) { return tmp == get<0>(item); }) == stages.end()) {
+                vector<int> path = get<2>(stage);
+                path.push_back(tmp[x][y]);
+                stages.push_back({ tmp, {x - 1, y}, path });
+            }
         }
         if (x < sizeR - 1) {
             tmp = std::get<0>(stage);
             std::swap(tmp[x][y], tmp[x + 1][y]);
-            if (find_if(stages.begin(), stages.end(), [&tmp](auto const& item) { return tmp == get<0>(item); }) == stages.end())
-                stages.push_back({ tmp, {x + 1, y} });
+            if (find_if(stages.begin(), stages.end(), [&tmp](auto const& item) { return tmp == get<0>(item); }) == stages.end()) {
+                vector<int> path = get<2>(stage);
+                path.push_back(tmp[x][y]);
+                stages.push_back({ tmp, {x + 1, y}, path });
+            }
         }
         if (y > 0) {
             tmp = std::get<0>(stage);
             std::swap(tmp[x][y], tmp[x][y - 1]);
-            if (find_if(stages.begin(), stages.end(), [&tmp](auto const& item) { return tmp == get<0>(item); }) == stages.end())
-                stages.push_back({ tmp, {x, y - 1} });
+            if (find_if(stages.begin(), stages.end(), [&tmp](auto const& item) { return tmp == get<0>(item); }) == stages.end()) {
+                vector<int> path = get<2>(stage);
+                path.push_back(tmp[x][y]);
+                stages.push_back({ tmp, {x, y - 1}, path });
+            }
         }
         if (y < sizeC - 1) {
             tmp = std::get<0>(stage);
             std::swap(tmp[x][y], tmp[x][y + 1]);
-            if (find_if(stages.begin(), stages.end(), [&tmp](auto const& item) { return tmp == get<0>(item); }) == stages.end())
-                stages.push_back({ tmp, {x, y + 1} });
+            if (find_if(stages.begin(), stages.end(), [&tmp](auto const& item) { return tmp == get<0>(item); }) == stages.end()) {
+                vector<int> path = get<2>(stage);
+                path.push_back(tmp[x][y]);
+                stages.push_back({ tmp, {x, y + 1}, path });
+            }
         }
 
     }
@@ -84,7 +96,8 @@ int main() {
                             { 7,6,5 } };
     //cout << (Stage{ v, { 1, 2 } } == Stage{ z, { 1, 2 } });
     //cout << (z == v);
-    cout <<slide_puzzle(v)[0];
+    auto x = slide_puzzle(v);
+    return 0;
     
     
 }
