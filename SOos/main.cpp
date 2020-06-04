@@ -33,29 +33,37 @@ std::vector<int> slide_puzzle(const Table& arr) {
     int i, j;
     for (int N = 1; N < count_of_numbers; ++N) {  //move top
 
-        curr = find_N(arr, N);
         i = (N - 1) / sizeR; // should be I
         j = (N - 1) % sizeC; // should be J
-        //compare to decide how to move
-        if (i < curr.first) {
-            while (curr.first != i) {
-                //move zero to (curr.i - 1)
-                //swap (arr[curr.i][curr.j], arr[curr - 1][curr.j]);
-            }
-        } 
 
+        if (i == sizeR - 2) curr = find_N(arr, N + 1);
+        else if (i == sizeR - 1) curr == find_N(arr, N - 1);
+        else curr == find_N(arr, N);
+
+        //compare to decide how to move
         if (j < curr.second) { //move right
             while (curr.second != j) {
                 //move zero to (curr.j - 1)
                 //swap (arr[curr.i][curr.j], arr[curr.i][curr.j - 1]);
             }
-        } 
+        }
         else if (j > curr.second) { //move left
             while (curr.second != j) {
                 //move zero to (curr.j + 1)
                 //swap (arr[curr.i][curr.j], arr[curr.i][curr.j + 1]);
             }
+        }
+        if (i < curr.first) {
+            while (curr.first != i) {
+                //move zero to (curr.i - 1)
+                //swap (arr[curr.i][curr.j], arr[curr - 1][curr.j]);
+            }
+            if (i == sizeR - 1) {
+                //round swap
+            }
         } 
+
+        
         
     }
     return { 0 };
