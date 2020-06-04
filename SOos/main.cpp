@@ -22,7 +22,25 @@ Coords find_N(const Table& arr, int N) {
     }
     return { -1,-1 };
 }
-std::vector<int> slide_puzzle(const Table& arr) {
+
+void move_Zero(Table& arr, Coords const& N, int i, int j) {
+    auto zero = find_N(arr, 0);
+    zero.first;
+    zero.second;
+    Coords pos = { i, curr.second - 1 };  // pos
+    if (j) { //if left/right
+        while (zero.second != curr.second - 1)
+
+
+    }
+    else if (i) { //if up/down
+
+
+    }
+
+
+}
+std::vector<int> slide_puzzle(Table arr) {
     const int ZERO = 0;
     auto sizeR = arr.size(), sizeC = arr[0].size();
     int count_of_numbers = sizeR * sizeC;
@@ -31,8 +49,7 @@ std::vector<int> slide_puzzle(const Table& arr) {
     Coords curr;
     Coords shouldbe;
     int i, j;
-    for (int N = 1; N < count_of_numbers; ++N) {  //move top
-
+    for (int N = 1; N <= count_of_numbers - 2 * sizeR; ++N) {  //exept 2 last rows
         i = (N - 1) / sizeR; // should be I
         j = (N - 1) % sizeC; // should be J
 
@@ -44,7 +61,9 @@ std::vector<int> slide_puzzle(const Table& arr) {
         if (j < curr.second) { //move right
             while (curr.second != j) {
                 //move zero to (curr.j - 1)
-                //swap (arr[curr.i][curr.j], arr[curr.i][curr.j - 1]);
+                move_Zero(arr, { curr.first, curr.second }, zero.first, zero.second);
+                swap (arr[curr.first][curr.first], arr[curr.first][curr.second - 1]);
+                --curr.second;
             }
         }
         else if (j > curr.second) { //move left
