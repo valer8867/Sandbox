@@ -64,18 +64,28 @@ void move_Zero(Table& arr, const int size, Coords const& N, int x, int y) { // s
             }
         }
         if (zero.first < x) {  // move up or down after right-left
-            swap(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
-            ++zero.first;
+            while (zero.first != x) {
+                swap(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
+                ++zero.first;
+            }
         }
         else if (zero.first > x) {
-            swap(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
-            --zero.first;
+            while (zero.first != x) {
+                swap(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
+                --zero.first;
+            }
         }
     }
     ////////////////////////////  better as second function  ////////////////////////////////////
     else {
 
         if (zero.first > x) { // move up
+            if ((zero.second == y - 1)&& (zero.first != size - 1)) {  // cant move top, when there are sorted parts, so go other side: down, right == under N
+                swap(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
+                ++zero.first;
+                swap(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
+                ++zero.second;
+            }
             while (zero.first != x) {
                 if (zero.first - 1 == N.first) {
                     if (zero.second != size - 1) {
@@ -91,29 +101,38 @@ void move_Zero(Table& arr, const int size, Coords const& N, int x, int y) { // s
                 --zero.first;
             }
         }
-        //else if (zero.second < y) { // move right
-        //    while (zero.second != y) {
-        //        if (zero.second + 1 == N.second) {
-        //            if (zero.first != size - 1) {
-        //                swap(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
-        //                ++zero.first;
-        //            }
-        //            else {
-        //                swap(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
-        //                --zero.first;
-        //            }
-        //        }
-        //        swap(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
-        //        ++zero.second;
-        //    }
-        //}
-        if (zero.second < y) {  // move up or down after right-left
-            swap(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
-            ++zero.second;
+        else if (zero.first < x) { // move down !!!!!!!!!!!! unchecked
+            /*if ((zero.second == y - 1) && (zero.first != size - 1)) {  // cant move top, when there are sorted parts, so go other side: down, right == under N
+                swap(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
+                ++zero.first;
+                swap(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
+                ++zero.second;
+            }*/
+            while (zero.first != x) {
+                if (zero.first + 1 == N.first) {
+                    if (zero.second != size - 1) {
+                        swap(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
+                        ++zero.second;
+                    }
+                    else {
+                        swap(arr[zero.first][zero.second], arr[zero.first][zero.second - 1]);
+                        --zero.second;
+                    }
+                }
+                swap(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
+                ++zero.first;
+            }
         }
-        else if (zero.second > y) {
-            swap(arr[zero.first][zero.second], arr[zero.first][zero.second - 1]);
-            --zero.second;
+
+        while (zero.second != y) {
+            if (zero.second < y) {  // move up or down after right-left
+                swap(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
+                ++zero.second;
+            }
+            else if (zero.second > y) {
+                swap(arr[zero.first][zero.second], arr[zero.first][zero.second - 1]);
+                --zero.second;
+            }
         }
     }
 
@@ -173,7 +192,7 @@ std::vector<int> slide_puzzle(Table arr) {
                 --curr.first;
             }
             if (i == sizeR - 1) {
-                //round swap
+                swap(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
             }
         } 
 
