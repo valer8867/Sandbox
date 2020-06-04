@@ -7,80 +7,58 @@
 #include <unordered_set>
 
 using namespace std;
+
 using Line = std::vector<int>;
 using Table = std::vector<Line>;
-using Stage = std::tuple<Table, std::pair<int, int>, Line>;
+using Coords = std::pair<int, int>;
 
-
-std::vector<int> slide_puzzle(const Table& arr) {
-    //// find zero coords
+Coords find_N(const Table& arr, int N) {
     int i = 0;
     int j = 0;
     auto sizeR = arr.size(), sizeC = arr[0].size();
     for (; i < sizeR; ++i) {
         for (j = 0; j < sizeC; ++j)
-            if (arr[i][j] == 0) goto endLoop;
+            if (arr[i][j] == 0) return { i, j };
     }
-    endLoop:
-    ///// create answer
-    auto answer = Table(sizeR, vector<int>(sizeC, 0));
-    size_t counter = 1;
-    for (auto& i : answer) {
-        for (auto& j : i) {
-            j = counter++;
-        }
-    }
-    answer.back().back() = 0;
-    /////
-    vector<Stage> stages;
-    stages.push_back({ arr, {i,j}, {} });
-    Table tmp;
-    for (int k = 0; k < stages.size(); ++k) {
-        auto stage = stages[k];
-        if (std::get<0>(stage) == answer) 
-            return get<2>(stage);
+    return { -1,-1 };
+}
+std::vector<int> slide_puzzle(const Table& arr) {
+    const int ZERO = 0;
+    auto sizeR = arr.size(), sizeC = arr[0].size();
+    int count_of_numbers = sizeR * sizeC;
 
-        int x = get<1>(stage).first;
-        int y = get<1>(stage).second;
-        if (x > 0) {
-            tmp = std::get<0>(stage);
-            std::swap(tmp[x][y], tmp[x - 1][y]);
-            if (find_if(stages.begin(), stages.end(), [&tmp](auto const& item) { return tmp == get<0>(item); }) == stages.end()) {
-                vector<int> path = get<2>(stage);
-                path.push_back(tmp[x][y]);
-                stages.push_back({ tmp, {x - 1, y}, path });
-            }
-        }
-        if (x < sizeR - 1) {
-            tmp = std::get<0>(stage);
-            std::swap(tmp[x][y], tmp[x + 1][y]);
-            if (find_if(stages.begin(), stages.end(), [&tmp](auto const& item) { return tmp == get<0>(item); }) == stages.end()) {
-                vector<int> path = get<2>(stage);
-                path.push_back(tmp[x][y]);
-                stages.push_back({ tmp, {x + 1, y}, path });
-            }
-        }
-        if (y > 0) {
-            tmp = std::get<0>(stage);
-            std::swap(tmp[x][y], tmp[x][y - 1]);
-            if (find_if(stages.begin(), stages.end(), [&tmp](auto const& item) { return tmp == get<0>(item); }) == stages.end()) {
-                vector<int> path = get<2>(stage);
-                path.push_back(tmp[x][y]);
-                stages.push_back({ tmp, {x, y - 1}, path });
-            }
-        }
-        if (y < sizeC - 1) {
-            tmp = std::get<0>(stage);
-            std::swap(tmp[x][y], tmp[x][y + 1]);
-            if (find_if(stages.begin(), stages.end(), [&tmp](auto const& item) { return tmp == get<0>(item); }) == stages.end()) {
-                vector<int> path = get<2>(stage);
-                path.push_back(tmp[x][y]);
-                stages.push_back({ tmp, {x, y + 1}, path });
-            }
-        }
+    Coords zero = find_N(arr, ZERO);
+    Coords curr;
+    Coords shouldbe;
+    int i, j;
+    for (int N = 1; N < count_of_numbers; ++N) {  //move top
 
+        curr = find_N(arr, N);
+        i = (N - 1) / sizeR; // should be I
+        j = (N - 1) % sizeC; // should be J
+        //compare to decide how to move
+        if (i < curr.first) {
+            while (curr.first != i) {
+                //move zero to (curr.i - 1)
+                //swap (arr[curr.i][curr.j], arr[curr - 1][curr.j]);
+            }
+        } 
+
+        if (j < curr.second) { //move right
+            while (curr.second != j) {
+                //move zero to (curr.j - 1)
+                //swap (arr[curr.i][curr.j], arr[curr.i][curr.j - 1]);
+            }
+        } 
+        else if (j > curr.second) { //move left
+            while (curr.second != j) {
+                //move zero to (curr.j + 1)
+                //swap (arr[curr.i][curr.j], arr[curr.i][curr.j + 1]);
+            }
+        } 
+        
     }
-    return {0,0,0};
+    return { 0 };
 }
 
 
@@ -88,15 +66,23 @@ std::vector<int> slide_puzzle(const Table& arr) {
 int main() {
 
 
-    vector<vector<int>> v = { { 4,1,3 },
-                            { 2,8,0 },
-                            { 7,6,5 } };
-    vector<vector<int>> z = { { 4,1,3 },
-                            { 2,8,0 },
-                            { 7,6,5 } };
+    vector<vector<int>> v = { {10, 3, 6, 4},
+        { 1, 5, 8, 0},
+        { 2,13, 7,15},
+        {14, 9,12,11} };
+    vector<vector<int>> z = {   {1,  2, 3,  4},
+                                {5,  0, 6,  8},
+                                {9, 10, 7, 11},
+                                {13,14,15, 12} };
+    Table h = {
+        {4,1,3},
+        {2,8,0},
+        {7,6,5} };
     //cout << (Stage{ v, { 1, 2 } } == Stage{ z, { 1, 2 } });
     //cout << (z == v);
-    auto x = slide_puzzle(v);
+    //auto x = slide_puzzle(h);
+
+   
     return 0;
     
     
