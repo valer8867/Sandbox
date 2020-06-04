@@ -23,51 +23,107 @@ Coords find_N(const Table& arr, int N) {
     return { -1,-1 };
 }
 
-void move_Zero(Table& arr, const int size, Coords const& N, int x, int y) {
+void move_Zero(Table& arr, const int size, Coords const& N, int x, int y) { // size for n*n table, should use second size for m*n
     auto zero = find_N(arr, 0);
+    // 1. for moving right to ot left to N, use left-right first, then use top
+    // 2 .for moveing top to N, use top-down first, then left-right
+    // so first is to check case 1 or 2
+    bool version = (x == N.first? 0 : 1);
     
-
-    if (zero.second > y) { // move left
-        while (zero.second != y) {
-            if (zero.second - 1 == N.second) {
-                if (zero.first != size - 1) {
-                    swap(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
-                    ++zero.first;
+    if (version == 0) {  //  -N-
+        if (zero.second > y) { // move left
+            while (zero.second != y) {
+                if (zero.second - 1 == N.second) {
+                    if (zero.first != size - 1) {
+                        swap(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
+                        ++zero.first;
+                    }
+                    else {
+                        swap(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
+                        --zero.first;
+                    }
                 }
-                else {
-                    swap(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
-                    --zero.first;
-                }
+                swap(arr[zero.first][zero.second], arr[zero.first][zero.second - 1]);
+                --zero.second;
             }
-            swap(arr[zero.first][zero.second], arr[zero.first][zero.second - 1]);
-            --zero.second;
         }
-    }
-    else if (zero.second < y) { // move right
-        while (zero.second != y) {
-            if (zero.second + 1 == N.second) {
-                if (zero.first != size - 1) {
-                    swap(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
-                    ++zero.first;
+        else if (zero.second < y) { // move right
+            while (zero.second != y) {
+                if (zero.second + 1 == N.second) {
+                    if (zero.first != size - 1) {
+                        swap(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
+                        ++zero.first;
+                    }
+                    else {
+                        swap(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
+                        --zero.first;
+                    }
                 }
-                else {
-                    swap(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
-                    --zero.first;
-                }
+                swap(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
+                ++zero.second;
             }
-            swap(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
-            ++zero.second;
         }
-    }
-    if (zero.first > x) {  //move up
-        while (zero.first != x) {
-            if (zero.first - 1 == N.first) {
-
-            }
+        if (zero.first < x) {  // move up or down after right-left
+            swap(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
+            ++zero.first;
+        }
+        else if (zero.first > x) {
             swap(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
             --zero.first;
         }
     }
+    ////////////////////////////  better as second function  ////////////////////////////////////
+    else {
+
+        if (zero.first > x) { // move up
+            while (zero.first != x) {
+                if (zero.first - 1 == N.first) {
+                    if (zero.second != size - 1) {
+                        swap(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
+                        ++zero.second;
+                    }
+                    else {
+                        swap(arr[zero.first][zero.second], arr[zero.first][zero.second - 1]);
+                        --zero.second;
+                    }
+                }
+                swap(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
+                --zero.first;
+            }
+        }
+        //else if (zero.second < y) { // move right
+        //    while (zero.second != y) {
+        //        if (zero.second + 1 == N.second) {
+        //            if (zero.first != size - 1) {
+        //                swap(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
+        //                ++zero.first;
+        //            }
+        //            else {
+        //                swap(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
+        //                --zero.first;
+        //            }
+        //        }
+        //        swap(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
+        //        ++zero.second;
+        //    }
+        //}
+        if (zero.second < y) {  // move up or down after right-left
+            swap(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
+            ++zero.second;
+        }
+        else if (zero.second > y) {
+            swap(arr[zero.first][zero.second], arr[zero.first][zero.second - 1]);
+            --zero.second;
+        }
+    }
+
+    /*while (zero.first != x) {
+        if (zero.first - 1 == N.first) {
+
+        }
+        swap(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
+        --zero.first;
+    }*/
 
 
 }
