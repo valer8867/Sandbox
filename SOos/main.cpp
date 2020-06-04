@@ -178,16 +178,33 @@ std::vector<int> slide_puzzle(Table arr) {
     int count_of_numbers = sizeR * sizeC;
     Coords curr;
     int i, j;
-    int mid = count_of_numbers - 2 * sizeR;
 
-    for (int N = 1; N <= mid; ++N) {  //exept 2 last rows
+    int mid = count_of_numbers - 2 * sizeR;
+    int end = count_of_numbers - 2;
+    for (int N = 1, counter = 1; counter <= end ; ++counter) {  //exept 2 last rows
         cout << N;
         i = (N - 1) / sizeR; // should be I
         j = (N - 1) % sizeC; // should be J
-        if (j == sizeC - 2) curr = find_N(arr, N + 1);
-        else if (j == sizeC - 1) curr = find_N(arr, N - 1);
-        else curr = find_N(arr, N);
-        
+
+
+        if (counter <= mid) {
+            if (j == sizeC - 2) curr = find_N(arr, N + 1);
+            else if (j == sizeC - 1) curr = find_N(arr, N - 1);
+            else curr = find_N(arr, N);
+            ++N;
+        }
+        else {
+            if (i == sizeC - 2) {
+                curr = find_N(arr, N + sizeR);
+                N += sizeR;
+            }
+            else if (i == sizeC - 1) {
+                curr = find_N(arr, N - sizeR);
+                N -= sizeR;
+                ++N;
+            }
+        }
+
         if (curr.second > j) { //move left
             while (curr.second != j) {
                 //move zero to (curr.j - 1)
@@ -232,63 +249,9 @@ std::vector<int> slide_puzzle(Table arr) {
         }
     }
 
-    for (int N = mid + 1, counter = N; counter <= count_of_numbers - 2; ++counter) {  // 2 last rows !!!!!!!!!!!!!!!!!!!
-        cout << N;
-        i = (N - 1) / sizeR; // should be I
-        j = (N - 1) % sizeC; // should be J
-        if (i == sizeC - 2) {
-            curr = find_N(arr, N + sizeR);
-            N += sizeR;
-        }
-        else if (i == sizeC - 1) {
-            curr = find_N(arr, N - sizeR);
-            N -= sizeR;
-            ++N;
-        }
+    
 
-        if (curr.second > j) { //move left
-            while (curr.second != j) {
-                //move zero to (curr.j - 1)
-                move_Zero(arr, sizeR, { curr.first, curr.second }, curr.first, curr.second - 1);
-                swap(arr[curr.first][curr.second], arr[curr.first][curr.second - 1]);
-                --curr.second;
-                printTable(arr);
-            }
-        }
-        else if (curr.second < j) { //move right
-            while (curr.second != j) {
-                //move zero to (curr.j + 1)
-                //swap (arr[curr.i][curr.j], arr[curr.i][curr.j + 1]);
-                move_Zero(arr, sizeR, { curr.first, curr.second }, curr.first, curr.second + 1);
-                swap(arr[curr.first][curr.second], arr[curr.first][curr.second + 1]);
-                ++curr.second;
-                printTable(arr);
-            }
-        }
-        if (curr.first > i) { //move up
-            while (curr.first != i) {
-                //move zero to (curr.i - 1)
-                //swap (arr[curr.i][curr.j], arr[curr - 1][curr.j]);
-                move_Zero(arr, sizeR, { curr.first, curr.second }, curr.first - 1, curr.second);
-                swap(arr[curr.first][curr.second], arr[curr.first - 1][curr.second]);
-                --curr.first;
-                printTable(arr);
-            }
-        }
-        if (j == sizeR - 1) {
-            //rotate 
-            swap(arr[i][j], arr[i + 1][j]);
-            swap(arr[i][j], arr[i][j - 1]);
-            swap(arr[i][j - 1], arr[i + 1][j - 1]);
-            swap(arr[i + 1][j - 1], arr[i + 1][j]);
-
-            swap(arr[i][j], arr[i + 1][j]);
-            swap(arr[i][j], arr[i][j - 1]);
-            swap(arr[i][j - 1], arr[i + 1][j - 1]);
-            printTable(arr);
-        }
-    }
-
+        
     if (arr[sizeC - 1][sizeR - 1] == sizeR * (sizeC - 1)) {
         swap(arr[sizeC - 1][sizeR - 1], arr[sizeC - 2][sizeR - 1]);
         printTable(arr);
