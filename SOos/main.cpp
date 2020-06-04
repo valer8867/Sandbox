@@ -23,19 +23,50 @@ Coords find_N(const Table& arr, int N) {
     return { -1,-1 };
 }
 
-void move_Zero(Table& arr, Coords const& N, int i, int j) {
+void move_Zero(Table& arr, const int size, Coords const& N, int x, int y) {
     auto zero = find_N(arr, 0);
-    zero.first;
-    zero.second;
-    Coords pos = { i, curr.second - 1 };  // pos
-    if (j) { //if left/right
-        while (zero.second != curr.second - 1)
+    
 
-
+    if (zero.second > y) { // move left
+        while (zero.second != y) {
+            if (zero.second - 1 == N.second) {
+                if (zero.first != size - 1) {
+                    swap(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
+                    ++zero.first;
+                }
+                else {
+                    swap(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
+                    --zero.first;
+                }
+            }
+            swap(arr[zero.first][zero.second], arr[zero.first][zero.second - 1]);
+            --zero.second;
+        }
     }
-    else if (i) { //if up/down
+    else if (zero.second < y) { // move right
+        while (zero.second != y) {
+            if (zero.second + 1 == N.second) {
+                if (zero.first != size - 1) {
+                    swap(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
+                    ++zero.first;
+                }
+                else {
+                    swap(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
+                    --zero.first;
+                }
+            }
+            swap(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
+            ++zero.second;
+        }
+    }
+    if (zero.first > x) {  //move up
+        while (zero.first != x) {
+            if (zero.first - 1 == N.first) {
 
-
+            }
+            swap(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
+            --zero.first;
+        }
     }
 
 
@@ -58,24 +89,32 @@ std::vector<int> slide_puzzle(Table arr) {
         else curr == find_N(arr, N);
 
         //compare to decide how to move
-        if (j < curr.second) { //move right
+
+        ////////////////////////////////////////////////
+        if (curr.second > j) { //move left
             while (curr.second != j) {
                 //move zero to (curr.j - 1)
-                move_Zero(arr, { curr.first, curr.second }, zero.first, zero.second);
+                move_Zero(arr, sizeR, { curr.first, curr.second }, curr.first, curr.second - 1);
                 swap (arr[curr.first][curr.first], arr[curr.first][curr.second - 1]);
                 --curr.second;
             }
         }
-        else if (j > curr.second) { //move left
+        else if (curr.second < j) { //move right
             while (curr.second != j) {
                 //move zero to (curr.j + 1)
                 //swap (arr[curr.i][curr.j], arr[curr.i][curr.j + 1]);
+                move_Zero(arr, sizeR, { curr.first, curr.second }, zero.first, zero.second + 1);
+                swap(arr[curr.first][curr.first], arr[curr.first][curr.second + 1]);
+                ++curr.second;
             }
         }
-        if (i < curr.first) {
+        if (curr.first > i) { //move up
             while (curr.first != i) {
                 //move zero to (curr.i - 1)
                 //swap (arr[curr.i][curr.j], arr[curr - 1][curr.j]);
+                move_Zero(arr, sizeR, { curr.first, curr.second }, zero.first - 1, zero.second);
+                swap(arr[curr.first][curr.first], arr[curr.first - 1][curr.second]);
+                --curr.first;
             }
             if (i == sizeR - 1) {
                 //round swap
