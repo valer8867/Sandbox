@@ -12,9 +12,12 @@ using Line = std::vector<int>;
 using Table = std::vector<Line>;
 using Coords = std::pair<int, int>;
 
+Table const* table;
+vector<int> res;
+
 void printTable(const Table& arr) {
     static int counter = 0;
-    cout  << "----------------------------------" << ++counter << "---------------------------------------------" << endl;
+    cout << "----------------------------------" << ++counter << "---------------------------------------------" << endl;
     for (auto const& i : arr) {
         for (auto const& j : i) {
             cout << j << "\t";
@@ -22,6 +25,14 @@ void printTable(const Table& arr) {
         cout << endl;
     }
 }
+
+void swap_and_log(int& a, int& b) {
+    swap(a, b);
+    res.push_back(a ? a : b);
+    printTable(*table);
+}
+
+
 
 Coords find_N(const Table& arr, int N) {
     int i = 0;
@@ -34,31 +45,30 @@ Coords find_N(const Table& arr, int N) {
     return { -1,-1 };
 }
 
-void move_Zero(Table& arr, const int size, Coords const& N, int x, int y) { // size for n*n table, should use second size for m*n
+void move_Zero(Table& arr, const int size, Coords N, int x, int y) {// N - Place of Number, xy - need "zero" here // size for n*n table, should use second size for m*n
     auto zero = find_N(arr, 0);
     // 1. for moving right to ot left to N, use left-right first, then use top
     // 2 .for moveing top to N, use top-down first, then left-right
     // so first is to check case 1 or 2
     bool version = (x == N.first? 0 : 1);
-    
     if (version == 0) {  //  -N-
         if (zero.second > y) { // move left
             while (zero.second != y) {
                 if (zero.second - 1 == N.second && zero.first == N.first) {
                     if (zero.first != size - 1) {
-                        swap(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
+                        swap_and_log(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
                         ++zero.first;
-                        printTable(arr);
+                        
                     }
                     else {
-                        swap(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
+                        swap_and_log(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
                         --zero.first;
-                        printTable(arr);
+                        
                     }
                 }
-                swap(arr[zero.first][zero.second], arr[zero.first][zero.second - 1]);
+                swap_and_log(arr[zero.first][zero.second], arr[zero.first][zero.second - 1]);
                 --zero.second;
-                printTable(arr);
+                
 
             }
         }
@@ -66,33 +76,33 @@ void move_Zero(Table& arr, const int size, Coords const& N, int x, int y) { // s
             while (zero.second != y) {
                 if (zero.second + 1 == N.second && zero.first == N.first) {
                     if (zero.first != size - 1) {
-                        swap(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
+                        swap_and_log(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
                         ++zero.first;
-                        printTable(arr);
+                        
                     }
                     else {
-                        swap(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
+                        swap_and_log(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
                         --zero.first;
-                        printTable(arr);
+                        
                     }
                 }
-                swap(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
+                swap_and_log(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
                 ++zero.second;
-                printTable(arr);
+                
             }
         }
         if (zero.first < x) {  // move up or down after right-left
             while (zero.first != x) {
-                swap(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
+                swap_and_log(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
                 ++zero.first;
-                printTable(arr);
+                
             }
         }
         else if (zero.first > x) {
             while (zero.first != x) {
-                swap(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
+                swap_and_log(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
                 --zero.first;
-                printTable(arr);
+                
             }
 
         }
@@ -102,77 +112,78 @@ void move_Zero(Table& arr, const int size, Coords const& N, int x, int y) { // s
 
         if (zero.first > x) { // move up
             if ((zero.second == y - 1)&& (zero.first != size - 1)) {  // cant move top, when there are sorted parts, so go other side: down, right == under N
-                swap(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
+                swap_and_log(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
                 ++zero.first;
-                printTable(arr);
-                swap(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
+                
+                swap_and_log(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
                 ++zero.second;
-                printTable(arr);
+                
             }
             while (zero.first != x) {
                 if (zero.first - 1 == N.first && zero.second == N.second) {
                     if (zero.second != size - 1) {
-                        swap(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
+                        swap_and_log(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
                         ++zero.second;
-                        printTable(arr);
+                        
                     }
                     else {
-                        swap(arr[zero.first][zero.second], arr[zero.first][zero.second - 1]);
+                        swap_and_log(arr[zero.first][zero.second], arr[zero.first][zero.second - 1]);
                         --zero.second;
-                        printTable(arr);
+                        
                     }
                 }
-                swap(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
+                swap_and_log(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
                 --zero.first;
-                printTable(arr);
+                
 
             }
         }
         else if (zero.first < x) { // move down !!!!!!!!!!!! unchecked
             /*if ((zero.second == y - 1) && (zero.first != size - 1)) {  // cant move top, when there are sorted parts, so go other side: down, right == under N
-                swap(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
+                swap_and_log(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
                 ++zero.first;
-                printTable(arr);
-                swap(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
+                
+                swap_and_log(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
                 ++zero.second;
-                printTable(arr);
+                
             }*/
             while (zero.first != x) {
                 if (zero.first + 1 == N.first) {
                     if (zero.second != size - 1) {
-                        swap(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
+                        swap_and_log(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
                         ++zero.second;
-                        printTable(arr);
+                        
                     }
                     else {
-                        swap(arr[zero.first][zero.second], arr[zero.first][zero.second - 1]);
+                        swap_and_log(arr[zero.first][zero.second], arr[zero.first][zero.second - 1]);
                         --zero.second;
-                        printTable(arr);
+                        
                     }
                 }
-                swap(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
+                swap_and_log(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
                 ++zero.first;
-                printTable(arr);
+                
 
             }
         }
 
         while (zero.second != y) {
             if (zero.second < y) {  // move up or down after right-left
-                swap(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
+                swap_and_log(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
                 ++zero.second;
             }
             else if (zero.second > y) {
-                swap(arr[zero.first][zero.second], arr[zero.first][zero.second - 1]);
+                swap_and_log(arr[zero.first][zero.second], arr[zero.first][zero.second - 1]);
                 --zero.second;
             }
-            printTable(arr);
+            
 
         }
     }
 }
 
 std::vector<int> slide_puzzle(Table arr) {
+    table = &arr;
     const int ZERO = 0;
     auto sizeR = arr.size(), sizeC = arr[0].size();
     int count_of_numbers = sizeR * sizeC;
@@ -181,8 +192,10 @@ std::vector<int> slide_puzzle(Table arr) {
 
     int mid = count_of_numbers - 2 * sizeR;
     int end = count_of_numbers - 2;
-    for (int N = 1, counter = 1; counter <= end ; ++counter) {  //exept 2 last rows
-        cout << N;
+
+
+    for (int N = 1, counter = 1; counter <= end; ++counter) {
+        cout << endl << "              " << counter << "        " << endl;
         i = (N - 1) / sizeR; // should be I
         j = (N - 1) % sizeC; // should be J
 
@@ -209,55 +222,62 @@ std::vector<int> slide_puzzle(Table arr) {
             while (curr.second != j) {
                 //move zero to (curr.j - 1)
                 move_Zero(arr, sizeR, { curr.first, curr.second }, curr.first, curr.second - 1);
-                swap (arr[curr.first][curr.second], arr[curr.first][curr.second - 1]);
+                swap_and_log(arr[curr.first][curr.second], arr[curr.first][curr.second - 1]);
                 --curr.second;
-                printTable(arr);
+
             }
         }
         else if (curr.second < j) { //move right
             while (curr.second != j) {
                 //move zero to (curr.j + 1)
-                //swap (arr[curr.i][curr.j], arr[curr.i][curr.j + 1]);
+                //swap_and_log (arr[curr.i][curr.j], arr[curr.i][curr.j + 1]);
                 move_Zero(arr, sizeR, { curr.first, curr.second }, curr.first, curr.second + 1);
-                swap(arr[curr.first][curr.second], arr[curr.first][curr.second + 1]);
+                swap_and_log(arr[curr.first][curr.second], arr[curr.first][curr.second + 1]);
                 ++curr.second;
-                printTable(arr);
+
             }
         }
         if (curr.first > i) { //move up
             while (curr.first != i) {
                 //move zero to (curr.i - 1)
-                //swap (arr[curr.i][curr.j], arr[curr - 1][curr.j]);
+                //swap_and_log (arr[curr.i][curr.j], arr[curr - 1][curr.j]);
                 move_Zero(arr, sizeR, { curr.first, curr.second }, curr.first - 1, curr.second);
-                swap(arr[curr.first][curr.second], arr[curr.first - 1][curr.second]);
+                swap_and_log(arr[curr.first][curr.second], arr[curr.first - 1][curr.second]);
                 --curr.first;
-                printTable(arr);
+
             }
-            
-        } 
+
+        }
         if (j == sizeR - 1) {
             //rotate 
-            swap(arr[i][j], arr[i + 1][j]);
-            swap(arr[i][j], arr[i][j - 1]);
-            swap(arr[i][j - 1], arr[i + 1][j - 1]);
-            swap(arr[i + 1][j - 1], arr[i + 1][j]);
+            swap_and_log(arr[i][j], arr[i + 1][j]);
+            swap_and_log(arr[i][j], arr[i][j - 1]);
+            swap_and_log(arr[i][j - 1], arr[i + 1][j - 1]);
+            swap_and_log(arr[i + 1][j - 1], arr[i + 1][j]);
 
-            swap(arr[i][j], arr[i + 1][j]);
-            swap(arr[i][j], arr[i][j - 1]);
-            swap(arr[i][j - 1], arr[i + 1][j - 1]);
-            printTable(arr);
+            swap_and_log(arr[i][j], arr[i + 1][j]);
+            swap_and_log(arr[i][j], arr[i][j - 1]);
+            swap_and_log(arr[i][j - 1], arr[i + 1][j - 1]);
+
         }
     }
-
-    
-
-        
-    if (arr[sizeC - 1][sizeR - 1] == sizeR * (sizeC - 1)) {
-        swap(arr[sizeC - 1][sizeR - 1], arr[sizeC - 2][sizeR - 1]);
-        printTable(arr);
-        return { 1 };
-    }
-
+    //for (int i = 0; i < 20; ++i) {
+        if (arr[sizeC - 1][sizeR - 1] == sizeR * (sizeC - 1)) {
+            swap_and_log(arr[sizeC - 1][sizeR - 1], arr[sizeC - 2][sizeR - 1]);
+            return res;
+        }
+        /*else {   //try rotate
+            i = sizeC - 1;
+            j = sizeR - 1;
+            
+            swap_and_log(arr[i][j], arr[i-1][j]);
+            swap_and_log(arr[i-1][j], arr[i-1][j-1]);
+            swap_and_log(arr[i-1][j-1], arr[i][j-1]);
+            swap_and_log(arr[i][j-1], arr[i][j]);
+           
+            
+        }*/
+    //}
     return { 0 };
 }
 
@@ -270,6 +290,11 @@ int main() {
         { 1, 5, 8, 0},
         { 2,13, 7,15},
         {14, 9,12,11} };
+    Table maz = { { 3, 7,14,15,10},
+        { 1, 0, 5, 9, 4},
+        {16, 2,11,12, 8},
+        {17, 6,13,18,20},
+        {21,22,23,19,24} };
     vector<vector<int>> z = {   {1,  2, 3,  4},
                                 {5,  0, 6,  8},
                                 {9, 10, 7, 11},
@@ -285,12 +310,16 @@ int main() {
                                  { 9, 11, 15,  2,  5},
                                  {20,  1, 16, 24, 10},
                                  { 6, 22, 18,  7,  0} };
-    Table h = {
+    Table second = { {10, 3, 6, 4},
+        { 1, 5, 8, 0},
+        { 2,13, 7,15},
+        {14, 9,12,11} };
+    Table error = {
         {4,1,3},
         {2,8,0},
         {7,6,5} };
     
-    auto x = slide_puzzle(s55);
+    auto x = slide_puzzle(maz);
 
    
     return 0;
