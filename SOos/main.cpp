@@ -192,7 +192,16 @@ std::vector<int> slide_puzzle(Table arr) {
                 --curr.first;
             }
             if (i == sizeR - 1) {
-                swap(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
+                //rotate 
+                swap(arr[i][j], arr[i + 1][j]);
+                swap(arr[i][j], arr[i][j - 1]);
+                swap(arr[i][j - 1], arr[i + 1][j - 1]);
+                swap(arr[i + 1][j - 1], arr[i + 1][j]);
+
+                swap(arr[i][j], arr[i + 1][j]);
+                swap(arr[i][j], arr[i][j - 1]);
+                swap(arr[i][j - 1], arr[i + 1][j - 1]);
+                
             }
         } 
 
