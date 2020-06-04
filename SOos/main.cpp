@@ -170,27 +170,16 @@ void move_Zero(Table& arr, const int size, Coords const& N, int x, int y) { // s
 
         }
     }
-
-    /*while (zero.first != x) {
-        if (zero.first - 1 == N.first) {
-
-        }
-        swap(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
-        --zero.first;
-        printTable(arr);
-    }*/
 }
 
 std::vector<int> slide_puzzle(Table arr) {
     const int ZERO = 0;
     auto sizeR = arr.size(), sizeC = arr[0].size();
     int count_of_numbers = sizeR * sizeC;
-
-    //Coords zero = find_N(arr, ZERO);
     Coords curr;
-    //Coords shouldbe;
     int i, j;
     int mid = count_of_numbers - 2 * sizeR;
+
     for (int N = 1; N <= mid; ++N) {  //exept 2 last rows
         cout << N;
         i = (N - 1) / sizeR; // should be I
@@ -242,13 +231,20 @@ std::vector<int> slide_puzzle(Table arr) {
             printTable(arr);
         }
     }
-    for (int N = mid + 1; N < count_of_numbers; ) {  // 2 last rows !!!!!!!!!!!!!!!!!!!
+
+    for (int N = mid + 1, counter = N; counter <= count_of_numbers - 2; ++counter) {  // 2 last rows !!!!!!!!!!!!!!!!!!!
         cout << N;
         i = (N - 1) / sizeR; // should be I
         j = (N - 1) % sizeC; // should be J
-        if (i == sizeC - 2) curr = find_N(arr, N + sizeR);
-        else if (j == sizeC - 1) curr = find_N(arr, N - 1);
-        else curr = find_N(arr, N);
+        if (i == sizeC - 2) {
+            curr = find_N(arr, N + sizeR);
+            N += sizeR;
+        }
+        else if (i == sizeC - 1) {
+            curr = find_N(arr, N - sizeR);
+            N -= sizeR;
+            ++N;
+        }
 
         if (curr.second > j) { //move left
             while (curr.second != j) {
@@ -278,7 +274,6 @@ std::vector<int> slide_puzzle(Table arr) {
                 --curr.first;
                 printTable(arr);
             }
-
         }
         if (j == sizeR - 1) {
             //rotate 
@@ -293,6 +288,13 @@ std::vector<int> slide_puzzle(Table arr) {
             printTable(arr);
         }
     }
+
+    if (arr[sizeC - 1][sizeR - 1] == sizeR * (sizeC - 1)) {
+        swap(arr[sizeC - 1][sizeR - 1], arr[sizeC - 2][sizeR - 1]);
+        printTable(arr);
+        return { 1 };
+    }
+
     return { 0 };
 }
 
