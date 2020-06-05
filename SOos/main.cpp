@@ -182,6 +182,46 @@ void move_Zero(Table& arr, const int size, Coords N, int x, int y) {// N - Place
     }
 }
 
+void move_N(Table& arr, int size, Coords curr, int i, int j) {
+    if (curr.second > j) { //move left
+        while (curr.second != j) {
+            //move zero to (curr.j - 1)
+            move_Zero(arr, size, { curr.first, curr.second }, curr.first, curr.second - 1);
+            swap_and_log(arr[curr.first][curr.second], arr[curr.first][curr.second - 1]);
+            --curr.second;
+        }
+    }
+    else if (curr.second < j) { //move right
+        while (curr.second != j) {
+            //move zero to (curr.j + 1)
+            //swap_and_log (arr[curr.i][curr.j], arr[curr.i][curr.j + 1]);
+            move_Zero(arr, size, { curr.first, curr.second }, curr.first, curr.second + 1);
+            swap_and_log(arr[curr.first][curr.second], arr[curr.first][curr.second + 1]);
+            ++curr.second;
+        }
+    }
+    if (curr.first > i) { //move up
+        while (curr.first != i) {
+            //move zero to (curr.i - 1)
+            //swap_and_log (arr[curr.i][curr.j], arr[curr - 1][curr.j]);
+            move_Zero(arr, size, { curr.first, curr.second }, curr.first - 1, curr.second);
+            swap_and_log(arr[curr.first][curr.second], arr[curr.first - 1][curr.second]);
+            --curr.first;
+        }
+    }
+    if (j == size - 1) {
+        //rotate 
+        swap_and_log(arr[i][j], arr[i + 1][j]);
+        swap_and_log(arr[i][j], arr[i][j - 1]);
+        swap_and_log(arr[i][j - 1], arr[i + 1][j - 1]);
+        swap_and_log(arr[i + 1][j - 1], arr[i + 1][j]);
+
+        swap_and_log(arr[i][j], arr[i + 1][j]);
+        swap_and_log(arr[i][j], arr[i][j - 1]);
+        swap_and_log(arr[i][j - 1], arr[i + 1][j - 1]);
+    }
+}
+
 std::vector<int> slide_puzzle(Table arr) {
     table = &arr;
     const int ZERO = 0;
@@ -210,6 +250,11 @@ std::vector<int> slide_puzzle(Table arr) {
             if (i == sizeC - 2) {
                 curr = find_N(arr, N + sizeR);
                 N += sizeR;
+                auto check = find_N(arr, N - sizeR);
+                if (check.second == j && check.second == j + 1) {
+                    // remove from moving zone
+
+                }
             }
             else if (i == sizeC - 1) {
                 curr = find_N(arr, N - sizeR);
@@ -217,49 +262,8 @@ std::vector<int> slide_puzzle(Table arr) {
                 ++N;
             }
         }
-
-        if (curr.second > j) { //move left
-            while (curr.second != j) {
-                //move zero to (curr.j - 1)
-                move_Zero(arr, sizeR, { curr.first, curr.second }, curr.first, curr.second - 1);
-                swap_and_log(arr[curr.first][curr.second], arr[curr.first][curr.second - 1]);
-                --curr.second;
-
-            }
-        }
-        else if (curr.second < j) { //move right
-            while (curr.second != j) {
-                //move zero to (curr.j + 1)
-                //swap_and_log (arr[curr.i][curr.j], arr[curr.i][curr.j + 1]);
-                move_Zero(arr, sizeR, { curr.first, curr.second }, curr.first, curr.second + 1);
-                swap_and_log(arr[curr.first][curr.second], arr[curr.first][curr.second + 1]);
-                ++curr.second;
-
-            }
-        }
-        if (curr.first > i) { //move up
-            while (curr.first != i) {
-                //move zero to (curr.i - 1)
-                //swap_and_log (arr[curr.i][curr.j], arr[curr - 1][curr.j]);
-                move_Zero(arr, sizeR, { curr.first, curr.second }, curr.first - 1, curr.second);
-                swap_and_log(arr[curr.first][curr.second], arr[curr.first - 1][curr.second]);
-                --curr.first;
-
-            }
-
-        }
-        if (j == sizeR - 1) {
-            //rotate 
-            swap_and_log(arr[i][j], arr[i + 1][j]);
-            swap_and_log(arr[i][j], arr[i][j - 1]);
-            swap_and_log(arr[i][j - 1], arr[i + 1][j - 1]);
-            swap_and_log(arr[i + 1][j - 1], arr[i + 1][j]);
-
-            swap_and_log(arr[i][j], arr[i + 1][j]);
-            swap_and_log(arr[i][j], arr[i][j - 1]);
-            swap_and_log(arr[i][j - 1], arr[i + 1][j - 1]);
-
-        }
+        move_N(arr, sizeC, curr, i, j);
+        
     }
     //for (int i = 0; i < 20; ++i) {
         if (arr[sizeC - 1][sizeR - 1] == sizeR * (sizeC - 1)) {
