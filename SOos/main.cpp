@@ -14,9 +14,9 @@ using Coords = std::pair<int, int>;
 
 Table const* table;
 vector<int> res;
+int counter = 0;
 
 void printTable(const Table& arr) {
-    static int counter = 0;
     cout << "----------------------------------" << ++counter << "---------------------------------------------" << endl;
     for (auto const& i : arr) {
         for (auto const& j : i) {
@@ -50,7 +50,7 @@ void move_Zero(Table& arr, const int size, Coords N, int x, int y) {// N - Place
     // 1. for moving right to ot left to N, use left-right first, then use top
     // 2 .for moveing top to N, use top-down first, then left-right
     // so first is to check case 1 or 2
-    bool version = (x == N.first? 0 : 1);
+    bool version = (x == N.first ? 0 : 1);
     if (version == 0) {  //  -N-
         if (zero.second > y) { // move left
             while (zero.second != y) {
@@ -58,17 +58,17 @@ void move_Zero(Table& arr, const int size, Coords N, int x, int y) {// N - Place
                     if (zero.first != size - 1) {
                         swap_and_log(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
                         ++zero.first;
-                        
+
                     }
                     else {
                         swap_and_log(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
                         --zero.first;
-                        
+
                     }
                 }
                 swap_and_log(arr[zero.first][zero.second], arr[zero.first][zero.second - 1]);
                 --zero.second;
-                
+
 
             }
         }
@@ -78,31 +78,31 @@ void move_Zero(Table& arr, const int size, Coords N, int x, int y) {// N - Place
                     if (zero.first != size - 1) {
                         swap_and_log(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
                         ++zero.first;
-                        
+
                     }
                     else {
                         swap_and_log(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
                         --zero.first;
-                        
+
                     }
                 }
                 swap_and_log(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
                 ++zero.second;
-                
+
             }
         }
         if (zero.first < x) {  // move up or down after right-left
             while (zero.first != x) {
                 swap_and_log(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
                 ++zero.first;
-                
+
             }
         }
         else if (zero.first > x) {
             while (zero.first != x) {
                 swap_and_log(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
                 --zero.first;
-                
+
             }
 
         }
@@ -111,30 +111,30 @@ void move_Zero(Table& arr, const int size, Coords N, int x, int y) {// N - Place
     else {
 
         if (zero.first > x) { // move up
-            if ((zero.second == y - 1)&& (zero.first != size - 1)) {  // cant move top, when there are sorted parts, so go other side: down, right == under N
+            if ((zero.second == y - 1) && (zero.first != size - 1)) {  // cant move top, when there are sorted parts, so go other side: down, right == under N
                 swap_and_log(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
                 ++zero.first;
-                
+
                 swap_and_log(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
                 ++zero.second;
-                
+
             }
             while (zero.first != x) {
                 if (zero.first - 1 == N.first && zero.second == N.second) {
                     if (zero.second != size - 1) {
                         swap_and_log(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
                         ++zero.second;
-                        
+
                     }
                     else {
                         swap_and_log(arr[zero.first][zero.second], arr[zero.first][zero.second - 1]);
                         --zero.second;
-                        
+
                     }
                 }
                 swap_and_log(arr[zero.first][zero.second], arr[zero.first - 1][zero.second]);
                 --zero.first;
-                
+
 
             }
         }
@@ -142,27 +142,27 @@ void move_Zero(Table& arr, const int size, Coords N, int x, int y) {// N - Place
             /*if ((zero.second == y - 1) && (zero.first != size - 1)) {  // cant move top, when there are sorted parts, so go other side: down, right == under N
                 swap_and_log(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
                 ++zero.first;
-                
+
                 swap_and_log(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
                 ++zero.second;
-                
+
             }*/
             while (zero.first != x) {
                 if (zero.first + 1 == N.first) {
                     if (zero.second != size - 1) {
                         swap_and_log(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
                         ++zero.second;
-                        
+
                     }
                     else {
                         swap_and_log(arr[zero.first][zero.second], arr[zero.first][zero.second - 1]);
                         --zero.second;
-                        
+
                     }
                 }
                 swap_and_log(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
                 ++zero.first;
-                
+
 
             }
         }
@@ -176,7 +176,7 @@ void move_Zero(Table& arr, const int size, Coords N, int x, int y) {// N - Place
                 swap_and_log(arr[zero.first][zero.second], arr[zero.first][zero.second - 1]);
                 --zero.second;
             }
-            
+
 
         }
     }
@@ -201,12 +201,28 @@ void move_N(Table& arr, int size, Coords curr, int i, int j) {
         }
     }
     if (curr.first > i) { //move up
+        auto zero = find_N(arr, 0);
+        if (zero.second < j - 1) {
+            while (zero.second != j - 1) {
+                swap_and_log(arr[zero.first][zero.second], arr[zero.first][zero.second + 1]);
+                ++zero.second;
+            }
+        }
         while (curr.first != i) {
             //move zero to (curr.i - 1)
             //swap_and_log (arr[curr.i][curr.j], arr[curr - 1][curr.j]);
             move_Zero(arr, size, { curr.first, curr.second }, curr.first - 1, curr.second);
             swap_and_log(arr[curr.first][curr.second], arr[curr.first - 1][curr.second]);
             --curr.first;
+        }
+    }
+    if (curr.first < i) { //move down for escape to size-1*size-1
+        while (curr.first != i) {
+            //move zero to (curr.i - 1)
+            //swap_and_log (arr[curr.i][curr.j], arr[curr - 1][curr.j]);
+            move_Zero(arr, size, { curr.first, curr.second }, curr.first + 1, curr.second);
+            swap_and_log(arr[curr.first][curr.second], arr[curr.first + 1][curr.second]);
+            ++curr.first;
         }
     }
     if (j == size - 1 && i != size - 1) {
@@ -223,6 +239,9 @@ void move_N(Table& arr, int size, Coords curr, int i, int j) {
 }
 
 std::vector<int> slide_puzzle(Table arr) {
+
+    res.clear();
+    counter = 0;
     table = &arr;
     const int ZERO = 0;
     auto sizeR = arr.size(), sizeC = arr[0].size();
@@ -241,11 +260,25 @@ std::vector<int> slide_puzzle(Table arr) {
 
 
         if (counter <= mid) {
-            if (j == sizeC - 2) curr = find_N(arr, N + 1);
-            else if (j == sizeC - 1) curr = find_N(arr, N - 1);
+            if (j == sizeC - 2) {
+                auto check = find_N(arr, N);
+                if (check.first == i || check.first == i + 1) {
+                    // remove from moving zone
+                    move_N(arr, sizeC, check, sizeC - 1, sizeR - 1);
+                }
+                curr = find_N(arr, N + 1);
+
+            }
+            else if (j == sizeC - 1) {
+
+                curr = find_N(arr, N - 1);
+                --j;
+            }
             else curr = find_N(arr, N);
             ++N;
             move_N(arr, sizeC, curr, i, j);
+            auto zero = find_N(arr, ZERO);
+            if (zero.first == i) swap_and_log(arr[zero.first][zero.second], arr[zero.first + 1][zero.second]);
         }
         else {
             if (i == sizeC - 2) {
@@ -266,13 +299,15 @@ std::vector<int> slide_puzzle(Table arr) {
             }
         }
     }
-    if (arr[sizeC - 1][sizeR - 1] == sizeR * sizeC - 1) {
+    auto zero = find_N(arr, ZERO);
+    if (zero.second == sizeR - 2)
         swap_and_log(arr[sizeC - 1][sizeR - 1], arr[sizeC - 1][sizeR - 2]);
+    else if (zero.first == sizeC - 2)
+        swap_and_log(arr[sizeC - 1][sizeR - 1], arr[sizeC - 2][sizeR - 1]);
+    if (arr[sizeC - 1][sizeR - 2] == sizeR * sizeC - 1 && arr[sizeC - 2][sizeR - 1] == sizeR * (sizeC - 1))
         return res;
-    }   
     return { 0 };
 }
-
 
 
 int main() {
@@ -302,7 +337,7 @@ int main() {
                                  { 9, 11, 15,  2,  5},
                                  {20,  1, 16, 24, 10},
                                  { 6, 22, 18,  7,  0} };
-    Table second = { {10, 3, 6, 4},
+    Table error2 = { {10, 3, 6, 4},
         { 1, 5, 8, 0},
         { 2,13, 7,15},
         {14, 9,12,11} };
@@ -310,10 +345,35 @@ int main() {
         {4,1,3},
         {2,8,0},
         {7,6,5} };
+    Table error3 = {
+        {15,	1,	3,	4},
+        {9,	5,	6,	8},
+        {13,	7,	14,	11},
+        {10,	2,	0,	12 }
+};
+    Table error4 = {
+            {2,	7,	0,	4,	8},
+    {1,	10,	3,	12,	9},
+    {6,	11,	14,	20,	5},
+    {16,17,	13,	23,	15},
+    {21,22,	18,	19,	24}
+};
+    Table invalid = {
+        {0,	3,	5},
+        {8,	4,	2},
+        {7,	1,	6} };
+
+    Table invalid2 = {
+        {3,	9,	11,	7},
+        {1,	12,	13,	4 },
+        {8,	2,	14,	0},
+        {6,	10,	15,	5} };
     
     //auto x = slide_puzzle(maz);
-    auto x = slide_puzzle(error);
-
+    //auto x = slide_puzzle(error2);
+    auto x = slide_puzzle(error4);
+    //auto x = slide_puzzle(error3);
+    
    
     return 0;
     
