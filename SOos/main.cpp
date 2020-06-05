@@ -373,11 +373,7 @@ int main() {
     //auto x = slide_puzzle(error2);
     auto x = slide_puzzle(error4);
     //auto x = slide_puzzle(error3);
-    
-   
-    return 0;
-    
-    
+    return 0; 
 }
 
 
