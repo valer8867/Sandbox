@@ -209,7 +209,7 @@ void move_N(Table& arr, int size, Coords curr, int i, int j) {
             --curr.first;
         }
     }
-    if (j == size - 1) {
+    if (j == size - 1 && i != size - 1) {
         //rotate 
         swap_and_log(arr[i][j], arr[i + 1][j]);
         swap_and_log(arr[i][j], arr[i][j - 1]);
@@ -245,43 +245,31 @@ std::vector<int> slide_puzzle(Table arr) {
             else if (j == sizeC - 1) curr = find_N(arr, N - 1);
             else curr = find_N(arr, N);
             ++N;
+            move_N(arr, sizeC, curr, i, j);
         }
         else {
             if (i == sizeC - 2) {
+                auto check = find_N(arr, N);
+                if (check.second == j || check.second == j + 1) {
+                    // remove from moving zone
+                    move_N(arr, sizeC, check, sizeC - 1, sizeR - 1);
+                }
                 curr = find_N(arr, N + sizeR);
                 N += sizeR;
-                auto check = find_N(arr, N - sizeR);
-                if (check.second == j && check.second == j + 1) {
-                    // remove from moving zone
-
-                }
+                move_N(arr, sizeC, curr, i, j);
             }
             else if (i == sizeC - 1) {
                 curr = find_N(arr, N - sizeR);
                 N -= sizeR;
                 ++N;
+                move_N(arr, sizeC, curr, i - 1, j);
             }
         }
-        move_N(arr, sizeC, curr, i, j);
-        
     }
-    //for (int i = 0; i < 20; ++i) {
-        if (arr[sizeC - 1][sizeR - 1] == sizeR * (sizeC - 1)) {
-            swap_and_log(arr[sizeC - 1][sizeR - 1], arr[sizeC - 2][sizeR - 1]);
-            return res;
-        }
-        /*else {   //try rotate
-            i = sizeC - 1;
-            j = sizeR - 1;
-            
-            swap_and_log(arr[i][j], arr[i-1][j]);
-            swap_and_log(arr[i-1][j], arr[i-1][j-1]);
-            swap_and_log(arr[i-1][j-1], arr[i][j-1]);
-            swap_and_log(arr[i][j-1], arr[i][j]);
-           
-            
-        }*/
-    //}
+    if (arr[sizeC - 1][sizeR - 1] == sizeR * sizeC - 1) {
+        swap_and_log(arr[sizeC - 1][sizeR - 1], arr[sizeC - 1][sizeR - 2]);
+        return res;
+    }   
     return { 0 };
 }
 
@@ -323,7 +311,8 @@ int main() {
         {2,8,0},
         {7,6,5} };
     
-    auto x = slide_puzzle(maz);
+    //auto x = slide_puzzle(maz);
+    auto x = slide_puzzle(error);
 
    
     return 0;
