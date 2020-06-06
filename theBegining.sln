@@ -9,7 +9,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "notnew", "notnew\notnew.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "templates", "templates\templates.vcxproj", "{DB5820CD-05C3-4A67-8836-897ACCD8FF9B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SOos", "SOos\SOos.vcxproj", "{723F7A4E-CD4F-4F0D-952C-F9C2BD9DA33A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sliding_puzzle+trash", "SOos\SOos.vcxproj", "{723F7A4E-CD4F-4F0D-952C-F9C2BD9DA33A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Next", "Next\Next.vcxproj", "{D010BE1C-38FF-4BB4-B59E-111AB784B781}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,14 @@ Global
 		{723F7A4E-CD4F-4F0D-952C-F9C2BD9DA33A}.Release|x64.Build.0 = Release|x64
 		{723F7A4E-CD4F-4F0D-952C-F9C2BD9DA33A}.Release|x86.ActiveCfg = Release|Win32
 		{723F7A4E-CD4F-4F0D-952C-F9C2BD9DA33A}.Release|x86.Build.0 = Release|Win32
+		{D010BE1C-38FF-4BB4-B59E-111AB784B781}.Debug|x64.ActiveCfg = Debug|x64
+		{D010BE1C-38FF-4BB4-B59E-111AB784B781}.Debug|x64.Build.0 = Debug|x64
+		{D010BE1C-38FF-4BB4-B59E-111AB784B781}.Debug|x86.ActiveCfg = Debug|Win32
+		{D010BE1C-38FF-4BB4-B59E-111AB784B781}.Debug|x86.Build.0 = Debug|Win32
+		{D010BE1C-38FF-4BB4-B59E-111AB784B781}.Release|x64.ActiveCfg = Release|x64
+		{D010BE1C-38FF-4BB4-B59E-111AB784B781}.Release|x64.Build.0 = Release|x64
+		{D010BE1C-38FF-4BB4-B59E-111AB784B781}.Release|x86.ActiveCfg = Release|Win32
+		{D010BE1C-38FF-4BB4-B59E-111AB784B781}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
